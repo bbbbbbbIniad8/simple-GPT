@@ -1,7 +1,7 @@
 import openai
 from dotenv import load_dotenv
 import os
-import re
+
 
 load_dotenv('.env')
 client = openai.OpenAI(
@@ -10,47 +10,45 @@ client = openai.OpenAI(
 )
 
 class GPT:
-    def __init__(self, prompt=None, model=None):
+    def __init__(self, prompt=None, model="gpt-4o-mini"):
         self.prompt = prompt
         self.model = model
-        self.history = [{"role": "system","content": ("Your best System" if self.prompt is None else self.prompt)}]
+        self.history = [{"role": "system", 
+                         "content": ("Your best System" if self.prompt is None else self.prompt)}]
 
-    def Res(self, question):
-        self.His_add('user', question)
-        answer = common_process(question, self.model, self.prompt, self.history)
-        self.His_add('system', answer)
+    def res(self, question):
+        self._add_to_history('user', question)
+        answer = common_process(self.history, self.model)
+        self._add_to_history('assistant', answer)
         return answer
-    
-    def Get_his(self, AI_name=None, user_name=None):
+
+    def get_history(self, user_name="user", AI_name="assistant"):
         result = ""
-        AI_name = "system" if AI_name is None else AI_name
-        user_name = "user" if user_name is None else user_name
-        for i in self.history:
-            speaker = AI_name if i['role'] == "system" else user_name
+        for i in self.history[1:]:
+            speaker = AI_name if i['role'] == "assistant" else user_name
             result += f"{speaker}: {i['content']}\n\n"
         return result
-    
-    def His_add(self, role, content):
+
+    def reset_history(self):
+        self.history = [self.history[0]]
+
+    def _add_to_history(self, role, content):
         self.history.append({'role': role, 'content': content})
 
     @classmethod
-    def ResSimple(cls, question):
-        return common_process(question)
-
-
-def common_process(question, model=None, prompt=None, history = None):
-    if history is None:
+    def res_simple(cls, question, model="gpt-4o-mini"):
         messages = [
             {"role": "system",
-                "content": ("Your best System" if prompt is None else prompt)},
+             "content": "Your best System"},
             {'role':'user',
             'content': question},
         ]
-    else:
-        messages = history
+        return common_process(messages, model)
 
+
+def common_process(messages, model="gpt-4o-mini"):
     response = client.chat.completions.create(
-        model = "gpt-4o-mini" if model is None else model,
+        model = model,
         messages = messages
     )
     return response.choices[0].message.content
