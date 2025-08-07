@@ -16,7 +16,7 @@ def sample1():
 def sample2():
     cat = GPT("猫として喋れ(200字以内で)")
     while True:
-        print(cat.res("挨拶しろ", save=False) + "\n\n\n")
+        print(cat.res("挨拶しろ") + "\n\n\n")
         for i in range(3):
             you_say = input("あなた発言を入力してください\n:")
             print("\n\n\n" + cat.res(you_say) + "\n\n\n")
@@ -24,7 +24,7 @@ def sample2():
         print("会話は終了しました。会話ログをtxtファイルで出力しますか?[y/n]")
         if input(":") == "y":
             with open("log.txt", mode = "w", encoding="utf-8") as f:
-                f.write(cat.get_history(AI_name="猫"))
+                f.write(cat.get_history(drop_first_question=True, AI_name="猫"))
         
         print("もう一度最初から会話をやり直しますか?")
         if input(":") == "y":

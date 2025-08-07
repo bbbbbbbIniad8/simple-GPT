@@ -16,21 +16,16 @@ class GPT:
         self.history = [{"role": "system", 
                          "content": ("Your best System" if self.prompt is None else self.prompt)}]
 
-    def res(self, question, save=True):
-        if save:
-            self._add_to_history('user', question)
-            answer = _common_process(self.history, self.model)
-        else:
-            temp_messages = self.history + [{'role': 'user', 'content': question}]
-            answer = _common_process(temp_messages, self.model)
-
-        if answer is not None:
-            self._add_to_history('assistant', answer)
+    def res(self, question):
+        self._add_to_history('user', question)
+        answer = common_process(self.history, self.model)
+        self._add_to_history('assistant', answer)
         return answer
 
-    def get_history(self, user_name="user", AI_name="assistant"):
+    def get_history(self,drop_first_question = False, user_name="user", AI_name="assistant"):
         result = ""
-        for i in self.history[1:]:
+        start_index = 1 if drop_first_question == False else 2
+        for i in self.history[start_index:]:
             speaker = AI_name if i['role'] == "assistant" else user_name
             result += f"{speaker}: {i['content']}\n\n"
         return result
@@ -49,10 +44,10 @@ class GPT:
             {'role':'user',
             'content': question},
         ]
-        return _common_process(messages, model)
+        return common_process(messages, model)
 
 
-def _common_process(messages, model="gpt-4o-mini"):
+def common_process(messages, model="gpt-4o-mini"):
     response = client.chat.completions.create(
         model = model,
         messages = messages
