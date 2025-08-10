@@ -24,7 +24,7 @@ def sample2():
         print("会話は終了しました。会話ログをtxtファイルで出力しますか?[y/n]")
         if input(":") == "y":
             with open("log.txt", mode = "w", encoding="utf-8") as f:
-                f.write(cat.get_history(drop_first_question=True, AI_name="猫"))
+                f.write(cat.get_str_history(drop_first_question=True, AI_name="猫"))
         
         print("もう一度最初から会話をやり直しますか?")
         if input(":") == "y":
@@ -33,6 +33,3 @@ def sample2():
             continue
         else:
             break
-        
-
-sample2()

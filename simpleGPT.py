@@ -22,13 +22,16 @@ class GPT:
         self._add_to_history('assistant', answer)
         return answer
 
-    def get_history(self,drop_first_question = False, user_name="user", AI_name="assistant"):
+    def get_str_history(self,drop_first_question = False, user_name="user", AI_name="assistant"):
         result = ""
         start_index = 1 if drop_first_question == False else 2
         for i in self.history[start_index:]:
             speaker = AI_name if i['role'] == "assistant" else user_name
             result += f"{speaker}: {i['content']}\n\n"
         return result
+    
+    def get_dict_history(self,drop_first_question = False, user_name="user", AI_name="assistant"):
+        return self.history
 
     def reset_history(self):
         self.history = [self.history[0]]
