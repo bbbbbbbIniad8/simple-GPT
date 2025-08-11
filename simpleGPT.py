@@ -30,7 +30,7 @@ class GPT:
             result += f"{speaker}: {i['content']}\n\n"
         return result
     
-    def get_dict_history(self,drop_first_question = False, user_name="user", AI_name="assistant"):
+    def get_dict_history(self):
         return self.history
 
     def reset_history(self):
